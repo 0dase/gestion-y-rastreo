@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Repartos Rápidos — Panel de Administración</title>
+
+  <!-- Leaflet CSS (mapas) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="css/admin.css"/>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════
+       SIDEBAR — Navegación lateral
+       ══════════════════════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-title">🚀 Repartos SAS</div>
+      <div class="logo-sub">Panel de Administración</div>
+    </div>
+
+    <div class="nav-item active"  onclick="switchTab('dashboard')">
+      <span class="nav-icon">📊</span> Dashboard
+    </div>
+    <div class="nav-item" onclick="switchTab('paquetes')">
+      <span class="nav-icon">📦</span> Paquetes
+    </div>
+    <div class="nav-item" onclick="switchTab('mapa')">
+      <span class="nav-icon">🗺️</span> Mapa Flota
+    </div>
+    <div class="nav-item" onclick="switchTab('nuevo')">
+      <span class="nav-icon">➕</span> Nuevo Envío
+    </div>
+  </aside>
+
+  <!-- ══════════════════════════════════════════════
+       CONTENIDO PRINCIPAL
+       ══════════════════════════════════════════════ -->
+  <div class="main">
+
+    <!-- Barra superior -->
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">Panel de Administración — Repartos Rápidos SAS</div>
+        <div class="topbar-sub" id="topbar-tab">Dashboard</div>
+      </div>
+      <div class="user-pill">👤 Admin_User</div>
+    </div>
+
+    <div class="content">
+
+      <!-- ── PESTAÑA: DASHBOARD ────────────────────── -->
+      <div class="tab-pane active" id="pane-dashboard">
+
+        <!-- Tarjetas de estadísticas -->
+        <div class="stats-grid">
+          <div class="stat-card total">
+            <div class="stat-label">Total Paquetes</div>
+            <div class="stat-value" id="stat-total">–</div>
+          </div>
+          <div class="stat-card bodega">
+            <div class="stat-label">En Bodega</div>
+            <div class="stat-value" id="stat-bodega">–</div>
+          </div>
+          <div class="stat-card ruta">
+            <div class="stat-label">En Ruta</div>
+            <div class="stat-value" id="stat-ruta">–</div>
+          </div>
+          <div class="stat-card incidencia">
+            <div class="stat-label">Incidencias</div>
+            <div class="stat-value" id="stat-incidencia">–</div>
+          </div>
+        </div>
+
+        <!-- Tabla de envíos recientes -->
+        <div class="section-header">
+          <div class="section-title">Envíos Recientes</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Guía</th>
+                <th>Remitente</th>
+                <th>Destinatario</th>
+                <th>Estado</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-dashboard"></tbody>
+          </table>
+        </div>
+      </div><!-- /pane-dashboard -->
+
+      <!-- ── PESTAÑA: PAQUETES ─────────────────────── -->
+      <div class="tab-pane" id="pane-paquetes">
+        <div class="section-header">
+          <div class="section-title">Todos los Envíos</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Guía</th>
+                <th>Remitente</th>
+                <th>Destinatario</th>
+                <th>Dirección</th>
+                <th>Peso</th>
+                <th>Repartidor</th>
+                <th>Estado</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-paquetes"></tbody>
+          </table>
+        </div>
+      </div><!-- /pane-paquetes -->
+
+      <!-- ── PESTAÑA: MAPA FLOTA ───────────────────── -->
+      <div class="tab-pane" id="pane-mapa">
+        <div class="section-header">
+          <div class="section-title">Ubicación de Flota en Tiempo Real</div>
+          <span class="badge-live">● Se actualiza cada 5 segundos</span>
+        </div>
+        <!-- El mapa Leaflet se monta aquí -->
+        <div id="mapa-flota"></div>
+      </div><!-- /pane-mapa -->
+
+      <!-- ── PESTAÑA: NUEVO ENVÍO ──────────────────── -->
+      <div class="tab-pane" id="pane-nuevo">
+        <div class="form-card">
+          <div class="form-title">Registrar Nuevo Envío</div>
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label>NOMBRE DEL REMITENTE <span>*</span></label>
+              <input id="f-remitente" type="text" placeholder="Nombre completo">
+            </div>
+
+            <div class="form-group">
+              <label>NOMBRE DEL DESTINATARIO <span>*</span></label>
+              <input id="f-destinatario" type="text" placeholder="Nombre completo">
+            </div>
+
+            <div class="form-group full">
+              <label>DIRECCIÓN DE DESTINO <span>*</span></label>
+              <input id="f-direccion" type="text" placeholder="Calle, número, ciudad">
+            </div>
+
+            <div class="form-group">
+              <label>PESO (KG)</label>
+              <input id="f-peso" type="number" step="0.1" placeholder="0.0">
+            </div>
+
+            <div class="form-group">
+              <label>DESCRIPCIÓN DEL CONTENIDO</label>
+              <input id="f-descripcion" type="text" placeholder="Ej: Documentos, Ropa...">
+            </div>
+
+          </div><!-- /form-grid -->
+          <div style="margin-top:20px">
+            <button class="btn btn-primary" onclick="registrarEnvio()">✓ Registrar Envío</button>
+          </div>
+        </div>
+      </div><!-- /pane-nuevo -->
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+
+  <!-- ══════════════════════════════════════════════
+       MODAL — Editar estado y repartidor
+       ══════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <div class="modal-title">Actualizar Estado de Envío</div>
+
+      <div class="modal-field">
+        <input id="modal-guia" type="text" readonly placeholder="Guía" style="opacity:.6">
+      </div>
+
+      <div class="form-group modal-field">
+        <label>Estado del Paquete</label>
+        <select id="modal-estado">
+          <option>En bodega</option>
+          <option>En ruta</option>
+          <option>Entregado</option>
+          <option>Incidencia</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Repartidor Asignado</label>
+        <select id="modal-repartidor"></select>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-ghost"   onclick="cerrarModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="guardarCambios()">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       TOAST — Notificaciones
+       ══════════════════════════════════════════════ -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Scripts (al final del body para mejor rendimiento) -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/admin.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Repartos Rápidos — Rastreo de Paquete</title>
+
+  <!-- Leaflet CSS (mapas) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="css/tracking.css"/>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════
+       HERO — Encabezado con buscador de guía
+       ══════════════════════════════════════════════ -->
+  <div class="hero">
+    <div class="hero-logo">🚀 Repartos Rápidos SAS</div>
+    <div class="hero-sub">Plataforma de rastreo de envíos en tiempo real</div>
+
+    <div class="search-box">
+      <input
+        id="input-guia"
+        type="text"
+        placeholder="Ingresa tu número de guía (Ej: RR-00001)"
+      >
+      <button class="btn-search" onclick="rastrear()">🔍 Rastrear</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       RESULTADO — Se llena dinámicamente con JS
+       ══════════════════════════════════════════════ -->
+  <div class="container">
+    <div id="resultado" style="display:none"></div>
+  </div>
+
+  <!-- Scripts (al final del body para mejor rendimiento) -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/tracking.js"></script>
+
+</body>
+</html>
